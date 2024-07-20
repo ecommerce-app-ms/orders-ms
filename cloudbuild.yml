@@ -28,8 +28,7 @@ steps:
   args:
     - -c
     - |
-      echo "Valor de ORDERS_DB_URL: $ORDERS_DB_URL"
-      docker build -t southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod -f dockerfile.prod --platform=linux/amd64 --build-arg ORDERS_DB_URL=$$ORDERS_DB_URL .
+      docker build -t southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod -f dockerfile.prod --platform=linux/amd64 --build-arg ORDERS_DB_URL=$$DATABASE_URL .
   secretEnv: ['DATABASE_URL']
 
 - name: 'gcr.io/cloud-builders/docker'
