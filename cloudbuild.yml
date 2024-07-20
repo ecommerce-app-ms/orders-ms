@@ -1,20 +1,45 @@
+# steps:
+#   - name: "gcr.io/cloud-builders/docker"
+#     args:
+#       [
+#         "build",
+#         "-t",
+#         "southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod",
+#         "-f",
+#         "dockerfile.prod",
+#         "--platform=linux/amd64",
+#         ".",
+#       ]
+#   - name: "gcr.io/cloud-builders/docker"
+#     args:
+#       [
+#         "push",
+#         "southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod",
+#       ]
+# options:
+#   logging: 'CLOUD_LOGGING_ONLY'
+
+
+
+
 steps:
-  - name: "gcr.io/cloud-builders/docker"
-    args:
-      [
-        "build",
-        "-t",
-        "southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod",
-        "-f",
-        "dockerfile.prod",
-        "--platform=linux/amd64",
-        ".",
-      ]
-  - name: "gcr.io/cloud-builders/docker"
-    args:
-      [
-        "push",
-        "southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod",
-      ]
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args:
+    - -c
+    - |
+      docker build -t southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod -f dockerfile.prod --platform=linux/amd64 --build-arg ORDERS_DB_URL=$$ORDERS_DB_URL .
+  secretEnv: ['DATABASE_URL']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    [
+      'push',
+      'southamerica-east1-docker.pkg.dev/microservices-dev-427010/image-register/orders-ms-prod',
+    ]
 options:
   logging: 'CLOUD_LOGGING_ONLY'
+availableSecrets:
+  secretManager:
+  - versionName: projects/424374364918/secrets/ORDERS_DB_URL/versions/1
+    env: 'DATABASE_URL'
